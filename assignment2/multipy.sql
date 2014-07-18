@@ -16,8 +16,10 @@ SELECT i, j, SUM(MatrixA.element_value * MatrixB.element_value)
  GROUP BY i, j;
 
 */
---CREATE VIEW c
---AS
+drop view c;
+
+CREATE VIEW c
+AS
 SELECT 
     a.row_num, b.col_num, SUM(a.value * b.value)
 FROM 
