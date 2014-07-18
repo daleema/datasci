@@ -1,0 +1,12 @@
+def test_output(string,debuglvl,function,file,line):
+    debug_level  = 0
+    if ( os.environ.has_key('PYTHON_DEBUG') == 'True'):
+        debug_level =  os.environ['PYTHON_DEBUG']
+
+    if (debuglvl <= debug_level):
+        print "DEBUG Msg from ("+function+") line: ("+str(line-2)+")\n"+\
+              "---------------------------------------------" + \
+              "----------------------------------\n" + \
+               string + "\n" +\
+              "---------------------------------------------" + \
+              "----------------------------------\n";

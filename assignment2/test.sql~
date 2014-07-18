@@ -1,0 +1,6 @@
+CREATE VIEW SimilarityMatrix
+AS
+SELECT docid,term, SUM(Frequency.count * TransFreq.count)
+  FROM Frequency, TransFreq
+ WHERE Frequency.docid = TransFreq.docid
+ GROUP BY Frequency.docid,TransFreq.term;

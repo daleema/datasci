@@ -1,0 +1,33 @@
+def get_tweet_text(text):
+    __function__ = 'get_tweet_text'
+    out = []
+    ignoreWords = [ ("rt"), ("@"), ("http"), ("#") ]
+
+    text = re.sub('\n+', '', text)
+    text = re.sub('\.+', '', text)
+    text = re.sub('\:+', '', text)
+    text = re.sub('\"+', '', text)
+    text = re.sub('\?', '', text)
+    text = re.sub('\@', '', text)
+    text = re.sub('\)', '', text)
+
+    text = ''.join(i for i in text if not i.isdigit())
+    
+    textArray = text.split(' ')
+
+    for tweetWord in textArray: 
+        tweetWord =''.join(chr(c) if chr(c).isupper() or chr(c).islower() else ' ' for c in range(256))
+        for ignoreWord in ignoreWords:
+            if ignoreWord in tweetWord:
+                print tweetWord
+                textArray.remove(tweetWord)
+                msg = "Removing word from the list: "+ tweetWord
+                output(msg,1,__function__,__file__)
+
+    msg = "Text array: " + str(textArray)
+    output(msg,1,__function__,__file__)
+
+    textArray = filter(None, textArray)
+    
+    # Convert the string to an array.
+    return textArray

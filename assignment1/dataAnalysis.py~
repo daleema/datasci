@@ -1,0 +1,29 @@
+#!/usr/bin/python
+
+import json
+
+new_values = []
+hash_tags = ()
+
+for line in open ('output.txt'):
+    encoded = unicode(line, 'utf-8')
+    tweet = json.loads(encoded)
+    if tweet.has_key('delete'):
+#        print "Skipping a delete object"
+        continue
+
+    if tweet['lang'] != "en":
+        msg = "Skipping a non-English tweet"
+        #test_output(msg,1,__function__,__file__, \
+        #        inspect.currentframe().f_lineno)
+        continue
+
+    if 'entities' in tweet.keys():
+        if type(tweet['entities']) is dict:
+            entities = tweet['entities']
+            hashtags = entities['hashtags']
+            text     = tweet['text'].encode('ascii', 'ignore')
+            print str(text)
+            #print str(hashtags) + "\n\n"
+            for tag in hashtags:
+                print tag['text']
