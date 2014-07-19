@@ -20,14 +20,17 @@ by Frequency */
 /*ANSWER*/
 /*------*/
 CREATE VIEW TransFreq 
-AS SELECT term, docid, count FROM Frequency;
+AS SELECT term, docid, count FROM Frequency
+order by term, docid;
 
 CREATE VIEW SimilarityMatrix
 AS
-SELECT i, j, SUM(MatrixA.element_value * MatrixB.element_value)
-  FROM MatrixA, MatrixB
- WHERE MatrixA.k = MatrixB.k
- GROUP BY i, j;
+SELECT
+  Frequency.term, TransFreq.docid, SUM(Frequency.count * TransFreq.count)
+FROM Frequency, TransFreq 
+WHERE Frequency.docid = TransFreq.docid and
+	Frequency.docid in ('10080_txt_crude','17035_txt_earn')
+GROUP BY Frequency.docid, Frequency.term;
 
 
 
