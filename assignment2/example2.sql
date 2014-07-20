@@ -331,6 +331,11 @@ CREATE VIEW ttable
 AS SELECT term, docid, count FROM atable
 GROUP by term, docid;
 
+--Create the transopse of the transpose table
+CREATE VIEW t2table
+AS SELECT term, docid, count FROM ttable
+GROUP by docid,term;
+
 CREATE VIEW stable
 AS
 SELECT

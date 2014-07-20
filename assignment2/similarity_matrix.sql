@@ -12,40 +12,47 @@ to your query. (But the query still won't return immediately if you try to compu
 What to turn in: On the assignment website, turn in a text 
 document similarity_matrix.txt that contains a single line giving 
 the similarity of the two documents '10080_txt_crude' and '17035_txt_earn'.
+
+This thread has been extremely helpful.  However I think I only saw 1 or 2 posts that refer back to the solution in g (multiply).  If have solved g then you have 90% of the solution for h. In g you are provided a and b.  In h you simply need to define a and b.
+
+Still there are some excellent explanations here about *why* that works out.
 */
 
 /*Take the transposition of the Frequency table and multiply it 
 by Frequency */
 
+--drop view TransFreq;
+--drop view SimilarityMatrix;
+
 /*ANSWER*/
-/*------*/
+/*------
 CREATE VIEW TransFreq 
 AS SELECT term, docid, count FROM Frequency
-order by term, docid;
-
-CREATE VIEW SimilarityMatrix
-AS
+order by term, docid;*/
 SELECT
-  Frequency.term, TransFreq.docid, SUM(Frequency.count * TransFreq.count)
-FROM Frequency, TransFreq 
-WHERE Frequency.docid = TransFreq.docid and
-	Frequency.docid in ('10080_txt_crude','17035_txt_earn')
-GROUP BY Frequency.docid, Frequency.term;
+  SUM(doc1.count * doc2.count)
+FROM 
+  ( select docid, term, count 
+    from Frequency 
+    where docid = ('10080_txt_crude')  ) doc1
+    join
+  ( select docid, term, count 
+    from Frequency 
+    where docid = ('17035_txt_earn') ) doc2
+WHERE 
+  doc1.term = doc2.term;
 
-
-
-/* From https://www.simple-talk.com/sql/t-sql-programming/matrix-math-in-sql/ 
-CREATE VIEW SimilarityMatrix
-AS
-SELECT i, j, SUM(MatrixA.element_value * MatrixB.element_value)
-  FROM MatrixA, MatrixB
- WHERE MatrixA.k = MatrixB.k
- GROUP BY i, j;
-
-	Here: 	i: docid
-		j: term
-		k: docid
-		MatrixA: Frequency
-		MatrixB: TransFreq
-
+/*
+Now take the dot product of the two matricies.
+select sum(v1.value * v2.value)
+select sum ( doc1.sum * doc2.sum)
+from 
+( select * from SimilarityMatrix 
+where docid = '10080_txt_crude' ) doc1
+join 
+( select * from SimilarityMatrix 
+where docid = '17035_txt_earn' ) doc2
+where doc1.term = doc2.term and 
+  doc1.term in (select term from SimilarityMatrix 
+	where docid = '10080_txt_crude' );
 */
