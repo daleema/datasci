@@ -1,4 +1,10 @@
 #!/usr/bin/python
+'''
+output should be a list of list. 
+Output is not a string  but a list of list: First element of the list is the word and the next element is the list of docids.
+Docids have to be unique. You can compare the output file with solutions/inverted_index.json... It matches exactly.
+Getting unique ids is simple . use set(list) and convert it back to the list using list()
+'''
 
 __author__ = 'datleeman'
 __file__   = 'inverted_index.py'
@@ -21,12 +27,11 @@ def output(string,debuglvl,function,file,line):
         print "DEBUG Msg from ("+function+") line: ("+str(line-2)+")\n"+\
               "---------------------------------------------" + \
               "----------------------------------\n" + \
-               string + "\n" +\
+               str(string) + "\n" + \
               "---------------------------------------------" + \
               "----------------------------------\n";
 # Use msg = "Skipping a delete object"
 # test_output(msg,1,__function__,__file__,inspect.currentframe().f_lineno)
-
 
 def mapper(record):
     # key: document identifier
@@ -35,20 +40,22 @@ def mapper(record):
     value = record[1]
     words = value.split()
     for w in words:
-      if w == '[':
-        continue
       w = w.encode('ascii','ignore')
       key = key.encode('ascii','ignore')
-      mr.emit_intermediate(w, key)
+      mr.emit_intermediate(str(w), str(key))
 
 def reducer(key, list_of_values):
     # key: word 
     # value: list of documents
-    dict = {}
-    dict[key] = list_of_values
+    msg = "Key is: "+str(key)+"\n"+"List of values: "+str(list_of_values)
+    #output(msg,1,reducer,__file__,inspect.currentframe().f_lineno)
+    docs = []
+    for item in list_of_values:
+        if item in docs:
+            continue
+        docs.append(item)
+    mr.emit((key, docs))
 
-    #print str(key) + " "+ str(list_of_values)
-    print str(dict) 
 
 def main():
     __function__ = 'main'
