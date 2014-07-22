@@ -13,7 +13,7 @@ import MapReduce
 mr = MapReduce.MapReduce()
 
 def output(string,debuglvl,function,file,line):
-    debug_level  = 10
+    debug_level  = 0
     if ( os.environ.has_key('PYTHON_DEBUG') == 'True'):
         debug_level =  os.environ['PYTHON_DEBUG']
 
@@ -35,15 +35,20 @@ def mapper(record):
     value = record[1]
     words = value.split()
     for w in words:
-      mr.emit_intermediate(w, 1)
+      if w == '[':
+        continue
+      w = w.encode('ascii','ignore')
+      key = key.encode('ascii','ignore')
+      mr.emit_intermediate(w, key)
 
 def reducer(key, list_of_values):
-    # key: word
-    # value: list of occurrence counts
-    total = 0
-    for v in list_of_values:
-      total += v
-    mr.emit((key, total))
+    # key: word 
+    # value: list of documents
+    dict = {}
+    dict[key] = list_of_values
+
+    #print str(key) + " "+ str(list_of_values)
+    print str(dict) 
 
 def main():
     __function__ = 'main'
